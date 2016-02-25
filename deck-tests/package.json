@@ -1,0 +1,20 @@
+{
+  "name": "browser-tests",
+  "version": "1.0.0",
+  "description": "browser tests for spinnaker",
+  "main": "main.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "casperjs": "^1.1.0-beta3",
+    "chai": "^3.4.1",
+    "mocha": "^2.3.4",
+    "mocha-generators": "^1.2.0",
+    "nightmare": "^2.0.9",
+    "requests": "^0.1.7",
+    "vo": "^1.0.3"
+  }
+}
