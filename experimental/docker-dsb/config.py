@@ -60,7 +60,7 @@ clouddriver["aws"]["enabled"] = True
 clouddriver["redis"]["connection"] = overrides["services"]["redis"]["connection"]
 clouddriver["default"]["account"]["env"] = overrides["providers"]["aws"]["primaryCredentials"]["name"]
 clouddriver["aws"]["defaultFront50Template"] = overrides["services"]["front50"]["baseUrl"]
-clouddriver["aws"]["defaultKeyPairTemplate"] = overrides["providers"]["aws"]["defaultKeyPairTemplate"]
+#clouddriver["aws"]["defaultKeyPairTemplate"] = overrides["providers"]["aws"]["defaultKeyPairTemplate"]
 clouddriver["credentials"]["primaryAccountTypes"] = overrides["providers"]["aws"]["primaryCredentials"]["name"]
 clouddriver["credentials"]["challengeDestructiveActionsEnvironments"] = overrides["providers"]["aws"]["primaryCredentials"]["name"]
 
@@ -70,7 +70,7 @@ clouddriver["server"].pop("address", None)
 
 rosco["redis"]["connection"] = overrides["services"]["redis"]["connection"]
 rosco["docker"]["bakeryDefaults"]["targetRepository"] = overrides["services"]["docker"]["targetRepository"]
-rosco["rosco"]["configDir"] = overrides["services"]["rosco"]["configDir"]
+#rosco["rosco"]["configDir"] = overrides["services"]["rosco"]["configDir"]
 rosco["server"].pop("address", None)
 
 orca["redis"]["connection"] = overrides["services"]["redis"]["connection"]
@@ -84,7 +84,7 @@ orca["bakery"]["baseUrl"] = overrides["services"]["rosco"]["baseUrl"]
 orca["default"]["bake"]["account"] = overrides["providers"]["aws"]["primaryCredentials"]["name"]
 orca.update({"igor":{"enabled":False}})
 orca.update({"tide":{"enabled":False, "baseUrl": "http://not-a-host"}})
-orca.update({"services":{"orca":{"timezone": overrides["global"]["spinnaker"]["timezone"]}}})
+orca.update({"services":{"orca":{"timezone": "west"}}})
 orca["server"].pop("address", None)
 
 gate["redis"]["connection"] = overrides["services"]["redis"]["connection"]
