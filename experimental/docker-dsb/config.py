@@ -88,7 +88,7 @@ orca.update({"services":{"orca":{"timezone": "west"}}})
 orca["server"].pop("address", None)
 
 gate["redis"]["connection"] = overrides["services"]["redis"]["connection"]
-gate.update({"services":{"deck":{"baseUrl":"http://localhost:8899"}, "clouddriver":{"baseUrl": overrides["services"]["oort"]["baseUrl"]}, "orca":{"baseUrl": overrides["services"]["orca"]["baseUrl"]}, "front50":{"baseUrl": overrides["services"]["front50"]["baseUrl"]}}})
+gate.update({"services":{"deck":{"baseUrl":"http://localhost:9000"}, "clouddriver":{"baseUrl": overrides["services"]["oort"]["baseUrl"]}, "orca":{"baseUrl": overrides["services"]["orca"]["baseUrl"]}, "front50":{"baseUrl": overrides["services"]["front50"]["baseUrl"]}}})
 gate["server"].pop("address", None)
 
 with open('config/front50.yml', 'w') as yaml_file:

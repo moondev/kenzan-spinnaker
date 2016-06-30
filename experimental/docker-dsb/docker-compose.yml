@@ -36,7 +36,7 @@ services:
      - spin-front50
     volumes:
      - ./config/clouddriver.yml:/opt/clouddriver/config/clouddriver.yml
-    env_file: .env
+    env_file: ./env.env
   spin-rosco:
     image: quay.io/spinnaker/rosco
     depends_on:
@@ -79,4 +79,4 @@ services:
      - ./deck:/opt/deck
      - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
-     - "80:80"
+     - "9000:80"
