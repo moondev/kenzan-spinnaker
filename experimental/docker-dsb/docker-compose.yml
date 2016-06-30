@@ -1,0 +1,82 @@
+version: '2'
+services:
+  spin-redis:
+    image: redis
+  spin-cassandra:
+    image: cassandra:2.2.5
+    environment:
+      CASSANDRA_START_RPC: "true"
+    depends_on:
+     - spin-redis
+  cassandra-setup:
+    image: cassandra:2.2.5
+    depends_on:
+     - spin-cassandra
+    links:
+     - spin-cassandra
+    volumes:
+     - ../../cassandra/create_front50_keyspace.cql:/front50.cql
+     - ../../cassandra/create_echo_keyspace.cql:/echo.cql
+     - ./wait-for-it.sh:/wait-for-it.sh
+    entrypoint: sleep 15; cat /etc/hosts; nodetool spin-cassandra enablethrift; cqlsh spin-cassandra -f /front50.cql;cqlsh spin-cassandra -f /echo.cql
+  spin-front50:
+    image: quay.io/spinnaker/front50
+    depends_on:
+     - cassandra-setup
+    links:
+     - spin-cassandra
+    volumes:
+     - ./config/front50.yml:/opt/front50/config/front50.yml
+  spin-clouddriver:
+    image: quay.io/spinnaker/clouddriver
+    depends_on:
+     - spin-front50
+    links:
+     - spin-redis
+     - spin-front50
+    volumes:
+     - ./config/clouddriver.yml:/opt/clouddriver/config/clouddriver.yml
+    env_file: .env
+  spin-rosco:
+    image: quay.io/spinnaker/rosco
+    depends_on:
+     - spin-clouddriver
+    links:
+     - spin-clouddriver
+     - spin-redis
+    volumes:
+     - ./config/rosco.yml:/opt/rosco/config/rosco.yml
+  spin-orca:
+    image: quay.io/spinnaker/orca
+    depends_on:
+     - spin-rosco
+    links:
+     - spin-rosco
+     - spin-redis
+     - spin-clouddriver
+     - spin-front50
+    volumes:
+     - ./config/orca.yml:/opt/orca/config/orca.yml
+  spin-gate:
+    image: quay.io/spinnaker/gate
+    depends_on:
+     - spin-orca
+    links:
+     - spin-clouddriver
+     - spin-redis
+     - spin-front50
+     - spin-orca
+    volumes:
+     - ./config/gate.yml:/opt/gate/config/gate.yml
+  spin-deck:
+    image: nginx
+    depends_on:
+     - spin-gate
+    links:
+     - spin-gate
+     - spin-rosco
+    volumes:
+     - ./deck:/opt/deck
+     - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+     - "80:80"
