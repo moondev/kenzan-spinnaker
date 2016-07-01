@@ -25,35 +25,40 @@ with open('../../config/orca.yml', 'r') as f:
 with open('../../config/gate.yml', 'r') as f:
   gate = yaml.load(f.read())
 
-overrides["services"]["redis"]["host"] = "spin-redis"
+overrides["services"]["redis"]["host"] = "redis-alias"
 overrides["services"]["redis"]["connection"] = "redis://" + overrides["services"]["redis"]["host"] + ":" + str(overrides["services"]["redis"]["port"])
 overrides["providers"]["aws"]["primaryCredentials"]["name"] = "default"
 
-overrides["services"]["cassandra"]["host"] = "spin-cassandra"
+overrides["services"]["cassandra"]["host"] = "cassandra-alias"
 overrides["services"]["cassandra"]["cluster"] = "Test Cluster"
 
-overrides["services"]["front50"]["host"] = "spin-front50"
+overrides["services"]["front50"]["host"] = "front50-alias"
 overrides["services"]["front50"]["baseUrl"] = overrides["services"]["default"]["protocol"] + "://" + overrides["services"]["front50"]["host"] + ":" + str(overrides["services"]["front50"]["port"])
 
-overrides["services"]["orca"]["host"] = "spin-orca"
+overrides["services"]["orca"]["host"] = "orca-alias"
 overrides["services"]["orca"]["baseUrl"] = overrides["services"]["default"]["protocol"] + "://" + overrides["services"]["orca"]["host"] + ":" + str(overrides["services"]["orca"]["port"])
 
-overrides["services"]["oort"]["host"] = "spin-clouddriver"
+overrides["services"]["oort"]["host"] = "clouddriver-alias"
 overrides["services"]["oort"]["baseUrl"] = overrides["services"]["default"]["protocol"] + "://" + overrides["services"]["oort"]["host"] + ":" + str(overrides["services"]["clouddriver"]["port"])
 
-overrides["services"]["mort"]["host"] = "spin-clouddriver"
+overrides["services"]["mort"]["host"] = "clouddriver-alias"
 overrides["services"]["mort"]["baseUrl"] = overrides["services"]["default"]["protocol"] + "://" + overrides["services"]["mort"]["host"] + ":" + str(overrides["services"]["clouddriver"]["port"])
 
-overrides["services"]["rosco"]["host"] = "spin-rosco"
+overrides["services"]["rosco"]["host"] = "rosco-alias"
 overrides["services"]["rosco"]["baseUrl"] = overrides["services"]["default"]["protocol"] + "://" + overrides["services"]["rosco"]["host"] + ":" + str(overrides["services"]["rosco"]["port"])
 
-overrides["services"]["kato"]["host"] = "spin-clouddriver"
+overrides["services"]["kato"]["host"] = "clouddriver-alias"
 overrides["services"]["kato"]["baseUrl"] = overrides["services"]["default"]["protocol"] + "://" + overrides["services"]["kato"]["host"] + ":" + str(overrides["services"]["clouddriver"]["port"])
 
 front50["cassandra"]["host"] = overrides["services"]["cassandra"]["host"]
+front50["cassandra"]["enabled"] = True
+front50["spinnaker"]["cassandra"]["enabled"] = True
+#front50["spinnaker"]["s3"]["enabled"] = True
+#front50["spinnaker"]["s3"]["bucket-name"] = "cdm-spin"
 front50["spinnaker"]["cassandra"]["host"] = overrides["services"]["cassandra"]["host"]
 front50["spinnaker"]["cassandra"]["cluster"] = overrides["services"]["cassandra"]["cluster"]
 front50["server"].pop("address", None)
+front50.update({"spinnaker":{"cassanadra":{"enabled":False},"s3":{"enabled":True,"rootFolder": "spinroot", "bucket": "cdm-spin-bucket"}}})
 
 clouddriver["aws"]["enabled"] = True
 
@@ -65,6 +70,7 @@ clouddriver["credentials"]["primaryAccountTypes"] = overrides["providers"]["aws"
 clouddriver["credentials"]["challengeDestructiveActionsEnvironments"] = overrides["providers"]["aws"]["primaryCredentials"]["name"]
 
 #add missing key for front50
+
 clouddriver.update({"services":{"front50":{"baseUrl":overrides["services"]["front50"]["baseUrl"]}}})
 clouddriver["server"].pop("address", None)
 
@@ -88,7 +94,7 @@ orca.update({"services":{"orca":{"timezone": "west"}}})
 orca["server"].pop("address", None)
 
 gate["redis"]["connection"] = overrides["services"]["redis"]["connection"]
-gate.update({"services":{"deck":{"baseUrl":"http://localhost:9000"}, "clouddriver":{"baseUrl": overrides["services"]["oort"]["baseUrl"]}, "orca":{"baseUrl": overrides["services"]["orca"]["baseUrl"]}, "front50":{"baseUrl": overrides["services"]["front50"]["baseUrl"]}}})
+gate.update({"services":{"deck":{"baseUrl":"http://deck-alias:9000"}, "clouddriver":{"baseUrl": overrides["services"]["oort"]["baseUrl"]}, "orca":{"baseUrl": overrides["services"]["orca"]["baseUrl"]}, "front50":{"baseUrl": overrides["services"]["front50"]["baseUrl"]}}})
 gate["server"].pop("address", None)
 
 with open('config/front50.yml', 'w') as yaml_file:
@@ -108,9 +114,9 @@ with open('config/gate.yml', 'w') as yaml_file:
 
 #build deck
 
-os.system("docker run -d -e CI=true -e API_HOST='/gate' -e BAKERY_DETAIL_URL='/bakery' --name spin-deck quay.io/spinnaker/deck")
-os.system("docker exec -it spin-deck npm install")
-os.system("docker exec -it spin-deck npm run build")
-os.system("docker cp spin-deck:/deck/build/webpack `pwd`/deck")
-os.system("docker stop spin-deck")
-os.system("docker rm spin-deck")
+#os.system("docker run -d -e CI=true -e API_HOST='/gate' -e BAKERY_DETAIL_URL='/bakery' --name spin-deck quay.io/spinnaker/deck")
+#os.system("docker exec -it spin-deck npm install")
+#os.system("docker exec -it spin-deck npm run build")
+#os.system("docker cp spin-deck:/deck/build/webpack `pwd`/deck")
+#os.system("docker stop spin-deck")
+#os.system("docker rm spin-deck")
