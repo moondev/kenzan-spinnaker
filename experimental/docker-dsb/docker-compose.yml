@@ -23,8 +23,15 @@ services:
         - cassandra-alias
     environment:
       CASSANDRA_START_RPC: "true"
+  wait:
+    image: chadmoon/dockerize
+    command: dockerize -wait tcp://cassandra-alias:9042 -timeout 30s echo "cassandra ready!"
+    networks:
+     internal:
+       aliases:
+        - cassandra-alias
     depends_on:
-     - redis
+     - cassandra
   cassandra-setup:
     image: cassandra:2.2.5
     depends_on:
@@ -43,7 +50,7 @@ services:
       - configdata
     env_file: .env
     depends_on:
-     - redis
+     - wait
   clouddriver:
     image: quay.io/spinnaker/clouddriver
     networks:

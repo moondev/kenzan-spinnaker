@@ -51,8 +51,8 @@ overrides["services"]["kato"]["host"] = "clouddriver-alias"
 overrides["services"]["kato"]["baseUrl"] = overrides["services"]["default"]["protocol"] + "://" + overrides["services"]["kato"]["host"] + ":" + str(overrides["services"]["clouddriver"]["port"])
 
 front50["cassandra"]["host"] = overrides["services"]["cassandra"]["host"]
-front50["cassandra"]["enabled"] = True
-front50["spinnaker"]["cassandra"]["enabled"] = True
+front50["cassandra"]["enabled"] = False
+#front50["spinnaker"]["cassandra"]["enabled"] = False
 #front50["spinnaker"]["s3"]["enabled"] = True
 #front50["spinnaker"]["s3"]["bucket-name"] = "cdm-spin"
 front50["spinnaker"]["cassandra"]["host"] = overrides["services"]["cassandra"]["host"]
