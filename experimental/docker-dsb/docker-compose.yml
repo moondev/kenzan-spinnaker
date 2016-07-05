@@ -6,7 +6,11 @@ networks:
 
 services:
   configdata:
-    image: debian:jessie
+    image: chadmoon/nginx-nmap
+    networks:
+     internal:
+       aliases:
+        - nmap-alias
     volumes:
      - ./config:/opt/spinnaker/config
   redis:
@@ -23,23 +27,23 @@ services:
         - cassandra-alias
     environment:
       CASSANDRA_START_RPC: "true"
-  wait:
-    image: chadmoon/dockerize
-    command: dockerize -wait tcp://cassandra-alias:9042 -timeout 30s echo "cassandra ready!"
-    networks:
-     internal:
-       aliases:
-        - cassandra-alias
-    depends_on:
-     - cassandra
-  cassandra-setup:
-    image: cassandra:2.2.5
-    depends_on:
-     - cassandra
-    volumes:
-     - ../../cassandra/create_front50_keyspace.cql:/front50.cql
-     - ../../cassandra/create_echo_keyspace.cql:/echo.cql
-    command: sleep 15; nodetool cassandra-alias enablethrift; cqlsh cassandra-alias -f /front50.cql;cqlsh cassandra-alias -f /echo.cql
+  # wait:
+  #   image: chadmoon/dockerize
+  #   command: dockerize -wait tcp://cassandra-alias:9042 -timeout 30s echo "cassandra ready!"
+  #   networks:
+  #    internal:
+  #      aliases:
+  #       - cassandra-alias
+  #   depends_on:
+  #    - cassandra
+  # cassandra-setup:
+  #   image: cassandra:2.2.5
+  #   depends_on:
+  #    - cassandra
+  #   volumes:
+  #    - ../../cassandra/create_front50_keyspace.cql:/front50.cql
+  #    - ../../cassandra/create_echo_keyspace.cql:/echo.cql
+  #   command: sleep 15; nodetool cassandra-alias enablethrift; cqlsh cassandra-alias -f /front50.cql;cqlsh cassandra-alias -f /echo.cql
   front50:
     image: quay.io/spinnaker/front50
     networks:
@@ -49,8 +53,6 @@ services:
     volumes_from:
       - configdata
     env_file: .env
-    depends_on:
-     - wait
   clouddriver:
     image: quay.io/spinnaker/clouddriver
     networks:
