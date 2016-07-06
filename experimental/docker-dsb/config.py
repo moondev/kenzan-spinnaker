@@ -51,14 +51,14 @@ overrides["services"]["kato"]["host"] = "clouddriver-alias"
 overrides["services"]["kato"]["baseUrl"] = overrides["services"]["default"]["protocol"] + "://" + overrides["services"]["kato"]["host"] + ":" + str(overrides["services"]["clouddriver"]["port"])
 
 front50["cassandra"]["host"] = overrides["services"]["cassandra"]["host"]
-front50["cassandra"]["enabled"] = False
+front50["cassandra"]["enabled"] = True
 #front50["spinnaker"]["cassandra"]["enabled"] = False
 #front50["spinnaker"]["s3"]["enabled"] = True
 #front50["spinnaker"]["s3"]["bucket-name"] = "cdm-spin"
 front50["spinnaker"]["cassandra"]["host"] = overrides["services"]["cassandra"]["host"]
 front50["spinnaker"]["cassandra"]["cluster"] = overrides["services"]["cassandra"]["cluster"]
 front50["server"].pop("address", None)
-front50.update({"spinnaker":{"cassanadra":{"enabled":False},"s3":{"enabled":True,"rootFolder": "spinroot", "bucket": "cdm-spin-bucket"}}})
+front50.update({"spinnaker":{"cassanadra":{"enabled":True, "cluster": overrides["services"]["cassandra"]["cluster"], "host": overrides["services"]["cassandra"]["host"]},"s3":{"enabled":False,"rootFolder": "spinroot", "bucket": "cdm-spin-bucket"}}})
 
 clouddriver["aws"]["enabled"] = True
 

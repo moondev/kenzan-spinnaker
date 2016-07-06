@@ -5,12 +5,14 @@ networks:
     driver: bridge
 
 services:
-  configdata:
-    image: chadmoon/nginx-nmap
+  pingbox:
+    image: nginx
     networks:
      internal:
        aliases:
-        - nmap-alias
+        - pingbox-alias
+  configdata:
+    image: debian:jessie
     volumes:
      - ./config:/opt/spinnaker/config
   redis:
