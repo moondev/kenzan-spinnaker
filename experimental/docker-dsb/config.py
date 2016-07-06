@@ -22,6 +22,9 @@ with open('../../config/rosco.yml', 'r') as f:
 with open('../../config/orca.yml', 'r') as f:
   orca = yaml.load(f.read())
 
+with open('../../config/echo.yml', 'r') as f:
+  echo = yaml.load(f.read())
+
 with open('../../config/gate.yml', 'r') as f:
   gate = yaml.load(f.read())
 
@@ -93,6 +96,13 @@ orca.update({"tide":{"enabled":False, "baseUrl": "http://not-a-host"}})
 orca.update({"services":{"orca":{"timezone": "west"}}})
 orca["server"].pop("address", None)
 
+echo["server"].pop("address", None)
+echo["cassandra"]["host"] = overrides["services"]["cassandra"]["host"]
+echo["cassandra"]["enabled"] = True
+echo["cassandra"]["embedded"] = False
+echo["front50"]["baseUrl"] = overrides["services"]["front50"]["baseUrl"]
+echo["orca"]["baseUrl"] = overrides["services"]["orca"]["baseUrl"]
+
 gate["redis"]["connection"] = overrides["services"]["redis"]["connection"]
 gate.update({"services":{"deck":{"baseUrl":"http://deck-alias:9000"}, "clouddriver":{"baseUrl": overrides["services"]["oort"]["baseUrl"]}, "orca":{"baseUrl": overrides["services"]["orca"]["baseUrl"]}, "front50":{"baseUrl": overrides["services"]["front50"]["baseUrl"]}}})
 gate["server"].pop("address", None)
@@ -109,14 +119,17 @@ with open('config/rosco.yml', 'w') as yaml_file:
 with open('config/orca.yml', 'w') as yaml_file:
   yaml_file.write(yaml.dump(orca, default_flow_style=False))
 
+with open('config/echo.yml', 'w') as yaml_file:
+  yaml_file.write(yaml.dump(echo, default_flow_style=False))
+
 with open('config/gate.yml', 'w') as yaml_file:
   yaml_file.write(yaml.dump(gate, default_flow_style=False))
 
 #build deck
 
-#os.system("docker run -d -e CI=true -e API_HOST='/gate' -e BAKERY_DETAIL_URL='/bakery' --name spin-deck quay.io/spinnaker/deck")
-#os.system("docker exec -it spin-deck npm install")
-#os.system("docker exec -it spin-deck npm run build")
-#os.system("docker cp spin-deck:/deck/build/webpack `pwd`/deck")
-#os.system("docker stop spin-deck")
-#os.system("docker rm spin-deck")
+os.system("docker run -d -e CI=true -e API_HOST='/gate' -e BAKERY_DETAIL_URL='/bakery' --name spin-deck quay.io/spinnaker/deck")
+os.system("docker exec -it spin-deck npm install")
+os.system("docker exec -it spin-deck npm run build")
+os.system("docker cp spin-deck:/deck/build/webpack `pwd`/deck")
+os.system("docker stop spin-deck")
+os.system("docker rm spin-deck")
